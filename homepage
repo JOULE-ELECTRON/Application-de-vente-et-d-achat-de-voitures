@@ -1,1 +1,11 @@
-gqisholkl,b,lnxwcv,lwv,lkw,kl QDCPn,oDV?Pm.
+import tkinter as tk
+import customtkinter
+from PIL import ImageTk, Image
+from tkinter import messagebox
+from Adminpage import AdminDashboard, CarStore
+from clients import clientDashboard, CarStore
+import json
+
+class LoginPage(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
