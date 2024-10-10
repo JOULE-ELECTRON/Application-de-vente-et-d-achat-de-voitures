@@ -9,4 +9,4 @@ class Car:
         self.modele = modele
         self.description = description
         self.prix = prix
-        self.image_path = image_path
+        self.image_path = image_path.
