@@ -8,4 +8,8 @@ import json
 
 class LoginPage(customtkinter.CTk):
     def __init__(self):
-        super().__init__()ss
+        super().__init__()
+
+    def Name(self):
+        return "name"
+    
