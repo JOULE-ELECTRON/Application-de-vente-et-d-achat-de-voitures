@@ -1,0 +1,162 @@
+[
+    {
+        "model": "cars.car",
+        "pk": 1,
+        "fields": {
+            "make": "BMW",
+            "model": "M5",
+            "year": 2023,
+            "price": 105000.00,
+            "mileage": 0,
+            "description": "Brand new BMW M5 with all premium features",
+            "image_url": "bmw-m5.jpg",
+            "condition": "New",
+            "transmission": "Automatic",
+            "fuel_type": "Gasoline"
+        }
+    },
+    {
+        "model": "cars.car",
+        "pk": 2,
+        "fields": {
+            "make": "Mercedes-Benz",
+            "model": "S-Class",
+            "year": 2022,
+            "price": 95000.00,
+            "mileage": 15000,
+            "description": "Luxury sedan with premium features",
+            "image_url": "mercedes-s.jpg",
+            "condition": "Used",
+            "transmission": "Automatic",
+            "fuel_type": "Hybrid"
+        }
+    },
+    {
+        "model": "cars.car",
+        "pk": 3,
+        "fields": {
+            "make": "Tesla",
+            "model": "Model S",
+            "year": 2023,
+            "price": 89990.00,
+            "mileage": 0,
+            "description": "All-electric luxury sedan with autopilot",
+            "image_url": "tesla-s.jpg",
+            "condition": "New",
+            "transmission": "Automatic",
+            "fuel_type": "Electric"
+        }
+    },
+    {
+        "model": "cars.car",
+        "pk": 4,
+        "fields": {
+            "make": "Porsche",
+            "model": "911",
+            "year": 2021,
+            "price": 125000.00,
+            "mileage": 8500,
+            "description": "Sports car with incredible performance",
+            "image_url": "porsche-911.jpg",
+            "condition": "Used",
+            "transmission": "Manual",
+            "fuel_type": "Gasoline"
+        }
+    },
+    {
+        "model": "cars.car",
+        "pk": 5,
+        "fields": {
+            "make": "Audi",
+            "model": "e-tron GT",
+            "year": 2023,
+            "price": 102995.00,
+            "mileage": 0,
+            "description": "All-electric performance sedan",
+            "image_url": "audi-etron.jpg",
+            "condition": "New",
+            "transmission": "Automatic",
+            "fuel_type": "Electric"
+        }
+    },
+    {
+        "model": "cars.car",
+        "pk": 6,
+        "fields": {
+            "make": "BMW",
+            "model": "i8",
+            "year": 2020,
+            "price": 85000.00,
+            "mileage": 22000,
+            "description": "Hybrid sports car with futuristic design",
+            "image_url": "bmw-i8.jpg",
+            "condition": "Used",
+            "transmission": "Automatic",
+            "fuel_type": "Hybrid"
+        }
+    },
+    {
+        "model": "cars.car",
+        "pk": 7,
+        "fields": {
+            "make": "Lexus",
+            "model": "LC 500",
+            "year": 2022,
+            "price": 93000.00,
+            "mileage": 12000,
+            "description": "Luxury sports coupe",
+            "image_url": "lexus-lc.jpg",
+            "condition": "Used",
+            "transmission": "Automatic",
+            "fuel_type": "Gasoline"
+        }
+    },
+    {
+        "model": "cars.car",
+        "pk": 8,
+        "fields": {
+            "make": "Mercedes-Benz",
+            "model": "AMG GT",
+            "year": 2023,
+            "price": 118000.00,
+            "mileage": 0,
+            "description": "High-performance sports car",
+            "image_url": "mercedes-amg-gt.jpg",
+            "condition": "New",
+            "transmission": "Automatic",
+            "fuel_type": "Gasoline"
+        }
+    },
+    {
+        "model": "cars.car",
+        "pk": 9,
+        "fields": {
+            "make": "Porsche",
+            "model": "Taycan",
+            "year": 2023,
+            "price": 86700.00,
+            "mileage": 0,
+            "description": "All-electric sports sedan",
+            "image_url": "porsche-taycan.jpg",
+            "condition": "New",
+            "transmission": "Automatic",
+            "fuel_type": "Electric"
+        }
+    },
+    {
+        "model": "cars.car",
+        "pk": 10,
+        "fields": {
+            "make": "Audi",
+            "model": "RS7",
+            "year": 2021,
+            "price": 98000.00,
+            "mileage": 18000,
+            "description": "High-performance luxury sportback",
+            "image_url": "audi-rs7.jpg",
+            "condition": "Used",
+            "transmission": "Automatic",
+            "fuel_type": "Gasoline"
+        }
+    }
+] 
