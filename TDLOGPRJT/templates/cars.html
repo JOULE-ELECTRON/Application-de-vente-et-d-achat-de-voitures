@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="cars-container">
+    <div class="cars-header">
+        <h1>Available Cars</h1>
+        
+        <div class="filters">
+            <form method="GET" action="{% url 'cars' %}" class="filter-form">
+                <div class="filter-group">
+                    <label for="make">Make</label>
+                    <select name="make" id="make">
+                        <option value="">All Makes</option>
+                        {% for make in makes %}
+                        <option value="{{ make }}" {% if request.GET.make == make %}selected{% endif %}>
+                            {{ make }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="sort">Sort By</label>
+                    <select name="sort" id="sort">
+                        <option value="">Featured</option>
+                        <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>
+                            Price: Low to High
+                        </option>
+                        <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>
+                            Price: High to Low
+                        </option>
+                        <option value="year_new" {% if request.GET.sort == 'year_new' %}selected{% endif %}>
+                            Newest First
+                        </option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="filter-button">
+                    <i class="fas fa-filter"></i> Apply Filters
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="cars-grid">
+        {% for car in cars %}
+        <div class="car-card" onclick="window.location.href='{% url 'car_detail' car.id %}'">
+            <div class="car-info">
+                <div class="car-header">
+                    <h2>{{ car.year }} {{ car.make }} {{ car.model }}</h2>
+                    <span class="badge {{ car.condition|lower }}">{{ car.condition }}</span>
+                </div>
+                <p class="price">${{ car.price|floatformat:2 }}</p>
+                <div class="car-details">
+                    <div class="detail-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>{{ car.mileage|intcomma }} miles</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-cog"></i>
+                        <span>{{ car.transmission }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-gas-pump"></i>
+                        <span>{{ car.fuel_type }}</span>
+                    </div>
+                </div>
+                <div class="car-actions">
+                    <a href="{% url 'car_detail' car.id %}" class="button primary">View Details</a>
+                    {% if user.is_authenticated %}
+                    <button class="button secondary favorite-btn">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if not cars %}
+    <div class="no-cars">
+        <i class="fas fa-car-side"></i>
+        <h2>No Cars Found</h2>
+        <p>Try adjusting your filters to see more results.</p>
+        <a href="{% url 'cars' %}" class="button primary">Clear Filters</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 
