@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="trade-offer-container">
+    <div class="trade-offer-header">
+        <div class="header-content">
+            <h1>Make a Trade Offer</h1>
+            <p>Propose a trade for {{ car.year }} {{ car.make }} {{ car.model }}</p>
+        </div>
+        <div class="header-icon">
+            <i class="fas fa-handshake"></i>
+        </div>
+    </div>
+
+    <div class="trade-offer-grid">
+        <!-- Car Details Card -->
+        <div class="desired-car-card">
+            <h2>Car You Want</h2>
+            <div class="car-showcase">
+                {% if car.image_url %}
+                <div class="car-image">
+                    <img src="{% static 'images/'|add:car.image_url %}" alt="{{ car.make }} {{ car.model }}">
+                    <div class="car-badge {{ car.condition|lower }}">{{ car.condition }}</div>
+                </div>
+                {% endif %}
+                <div class="car-details">
+                    <h3>{{ car.year }} {{ car.make }} {{ car.model }}</h3>
+                    <div class="price-tag">
+                        <i class="fas fa-tag"></i>
+                        <span>${{ car.price|floatformat:2|intcomma }}</span>
+                    </div>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>{{ car.mileage|intcomma }} miles</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-cog"></i>
+                            <span>{{ car.transmission }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-gas-pump"></i>
+                            <span>{{ car.fuel_type }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trade Offer Form -->
+        <div class="trade-form">
+            <form method="POST" class="offer-form">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Please correct the errors below.</span>
+                </div>
+                {% endif %}
+
+                <div class="form-section">
+                    <h3>
+                        <i class="fas fa-car"></i>
+                        Select Your Trade-In Vehicle
+                    </h3>
+                    <div class="select-wrapper">
+                        {{ form.trade_in_car }}
+                        {% if form.trade_in_car.errors %}
+                        <div class="error-message">{{ form.trade_in_car.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>
+                        <i class="fas fa-dollar-sign"></i>
+                        Additional Cash Offer
+                    </h3>
+                    <div class="cash-input">
+                        <span class="currency-symbol">$</span>
+                        {{ form.additional_cash }}
+                        {% if form.additional_cash.errors %}
+                        <div class="error-message">{{ form.additional_cash.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>
+                        <i class="fas fa-comment"></i>
+                        Message to Seller
+                    </h3>
+                    {{ form.message }}
+                    {% if form.message.errors %}
+                    <div class="error-message">{{ form.message.errors.0 }}</div>
+                    {% endif %}
+                    <p class="help-text">Include any additional details about your trade offer</p>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="button primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Trade Offer
+                    </button>
+                    <a href="{% url 'car_detail' car.id %}" class="button secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="trade-offers-container">
+    <div class="trade-offers-header">
+        <h1>Trade Offers</h1>
+    </div>
+
+    <div class="trade-offers-sections">
+        <!-- Received Offers -->
+        <div class="trade-offers-section">
+            <h2>Offers Received</h2>
+            <div class="offers-list">
+                {% for offer in received_offers %}
+                <div class="offer-card">
+                    <div class="cars-comparison">
+                        <div class="car-item">
+                            <h3>Your Car</h3>
+                            <div class="car-details">
+                                <img src="{% static 'images/'|add:offer.seller_car.image_url %}" alt="{{ offer.seller_car }}">
+                                <div class="car-info">
+                                    <h4>{{ offer.seller_car.year }} {{ offer.seller_car.make }} {{ offer.seller_car.model }}</h4>
+                                    <p class="price">${{ offer.seller_car.price|floatformat:2|intcomma }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exchange-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="car-item">
+                            <h3>Offered Car</h3>
+                            <div class="car-details">
+                                <img src="{% static 'images/'|add:offer.trade_in_car.image_url %}" alt="{{ offer.trade_in_car }}">
+                                <div class="car-info">
+                                    <h4>{{ offer.trade_in_car.year }} {{ offer.trade_in_car.make }} {{ offer.trade_in_car.model }}</h4>
+                                    <p class="price">${{ offer.trade_in_car.price|floatformat:2|intcomma }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if offer.additional_cash > 0 %}
+                    <div class="additional-cash">
+                        <i class="fas fa-plus"></i>
+                        <span>${{ offer.additional_cash|floatformat:2|intcomma }} additional cash</span>
+                    </div>
+                    {% endif %}
+
+                    {% if offer.message %}
+                    <div class="offer-message">
+                        <p>"{{ offer.message }}"</p>
+                        <span class="message-author">- {{ offer.buyer.username }}</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="offer-footer">
+                        <div class="offer-status {{ offer.status }}">
+                            <span>{{ offer.status|title }}</span>
+                        </div>
+                        {% if offer.status == 'pending' %}
+                        <div class="offer-actions">
+                            <a href="{% url 'handle_trade_offer' offer.id 'accept' %}" class="button primary">
+                                <i class="fas fa-check"></i> Accept
+                            </a>
+                            <a href="{% url 'handle_trade_offer' offer.id 'reject' %}" class="button secondary">
+                                <i class="fas fa-times"></i> Reject
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-offers">
+                    <i class="fas fa-inbox"></i>
+                    <p>No offers received yet</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Made Offers -->
+        <div class="trade-offers-section">
+            <h2>Offers Made</h2>
+            <div class="offers-list">
+                {% for offer in made_offers %}
+                <div class="offer-card">
+                    <div class="cars-comparison">
+                        <div class="car-item">
+                            <h3>Car You Want</h3>
+                            <div class="car-details">
+                                <img src="{% static 'images/'|add:offer.seller_car.image_url %}" alt="{{ offer.seller_car }}">
+                                <div class="car-info">
+                                    <h4>{{ offer.seller_car.year }} {{ offer.seller_car.make }} {{ offer.seller_car.model }}</h4>
+                                    <p class="price">${{ offer.seller_car.price|floatformat:2|intcomma }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exchange-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="car-item">
+                            <h3>Your Offered Car</h3>
+                            <div class="car-details">
+                                <img src="{% static 'images/'|add:offer.trade_in_car.image_url %}" alt="{{ offer.trade_in_car }}">
+                                <div class="car-info">
+                                    <h4>{{ offer.trade_in_car.year }} {{ offer.trade_in_car.make }} {{ offer.trade_in_car.model }}</h4>
+                                    <p class="price">${{ offer.trade_in_car.price|floatformat:2|intcomma }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if offer.additional_cash > 0 %}
+                    <div class="additional-cash">
+                        <i class="fas fa-plus"></i>
+                        <span>${{ offer.additional_cash|floatformat:2|intcomma }} additional cash</span>
+                    </div>
+                    {% endif %}
+
+                    {% if offer.message %}
+                    <div class="offer-message">
+                        <p>"{{ offer.message }}"</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="offer-footer">
+                        <div class="offer-status {{ offer.status }}">
+                            <span>{{ offer.status|title }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-offers">
+                    <i class="fas fa-paper-plane"></i>
+                    <p>You haven't made any offers yet</p>
+                    <a href="{% url 'cars' %}" class="button primary">Browse Cars</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
