@@ -1,3 +1,0 @@
-Django>=4.2.0
-Pillow  # for image handling
-django-crispy-forms  # for better form rendering 
