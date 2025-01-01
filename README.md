@@ -40,10 +40,8 @@ python manage.py migrate
 
 #Lancez le serveur local :
 
-
 python manage.py runserver
-Accédez à l'application :
-Ouvrez http://127.0.0.1:8000 dans votre navigateur.
+
 
 #Fonctionnalités Principales
 Filtrage et tri :
