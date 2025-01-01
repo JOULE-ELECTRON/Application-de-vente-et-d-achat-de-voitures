@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="favorites-container">
+    <div class="favorites-header">
+        <h1>My Favorite Cars</h1>
+    </div>
+    
+    <div class="cars-grid">
+        {% for car in favorite_cars %}
+        <div class="car-card">
+            <div class="car-image">
+                {% if car.image_url %}
+                <img src="{% static 'images/'|add:car.image_url %}" alt="{{ car.make }} {{ car.model }}">
+                {% endif %}
+            </div>
+            <div class="car-info">
+                <h2>{{ car.year }} {{ car.make }} {{ car.model }}</h2>
+                <p class="price">${{ car.price|floatformat:2|intcomma }}</p>
+                <div class="car-details">
+                    <span><i class="fas fa-tachometer-alt"></i> {{ car.mileage|intcomma }} miles</span>
+                    <span><i class="fas fa-cog"></i> {{ car.transmission }}</span>
+                </div>
+                <div class="car-actions">
+                    <a href="{% url 'car_detail' car.id %}" class="button primary">View Details</a>
+                    <button class="button secondary favorite-btn active" data-car-id="{{ car.id }}">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-favorites">
+            <i class="far fa-heart"></i>
+            <h2>No Favorite Cars Yet</h2>
+            <p>Start browsing cars and add them to your favorites!</p>
+            <a href="{% url 'cars' %}" class="button primary">Browse Cars</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

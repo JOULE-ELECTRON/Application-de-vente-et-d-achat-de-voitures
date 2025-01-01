@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="notifications-container">
+    <div class="notifications-header">
+        <h1>Notifications</h1>
+        {% if unread_count %}
+        <span class="badge">{{ unread_count }} unread</span>
+        {% endif %}
+    </div>
+
+    <div class="notifications-list">
+        {% for notification in notifications %}
+        <div class="notification-item {% if not notification.is_read %}unread{% endif %}" 
+             data-notification-id="{{ notification.id }}"
+             onclick="markAsRead(this, {{ notification.id }})">
+            <div class="notification-icon">
+                {% if notification.notification_type == 'trade_offer' %}
+                <i class="fas fa-exchange-alt"></i>
+                {% elif notification.notification_type == 'offer_received' %}
+                <i class="fas fa-inbox"></i>
+                {% elif notification.notification_type == 'offer_accepted' %}
+                <i class="fas fa-check-circle"></i>
+                {% elif notification.notification_type == 'offer_rejected' %}
+                <i class="fas fa-times-circle"></i>
+                {% endif %}
+            </div>
+            <div class="notification-content">
+                <p class="notification-message">{{ notification.message }}</p>
+                <span class="notification-time">{{ notification.created_at|timesince }} ago</span>
+            </div>
+            {% if notification.trade_offer %}
+            <div class="notification-actions">
+                <a href="{% url 'trade_offers' %}" class="button primary small">View Trade Offer</a>
+            </div>
+            {% elif notification.offer %}
+                {% if notification.notification_type == 'offer_received' %}
+                <div class="notification-actions">
+                    <a href="{% url 'view_offers' %}#offer-{{ notification.offer.id }}" class="button primary small">
+                        <i class="fas fa-inbox"></i>
+                        View Received Offer
+                    </a>
+                </div>
+                {% else %}
+                <div class="notification-actions">
+                    <a href="{% url 'my_offers' %}#offer-{{ notification.offer.id }}" class="button primary small">
+                        <i class="fas fa-paper-plane"></i>
+                        View My Offer
+                    </a>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="no-notifications">
+            <i class="fas fa-bell-slash"></i>
+            <p>No notifications yet</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.notification-actions .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.notification-actions .button i {
+    font-size: 0.875rem;
+}
+
+.notification-item.unread .notification-actions .button {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(59, 130, 246, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+</style>
+
+<script>
+async function markAsRead(element, notificationId) {
+    if (element.classList.contains('unread')) {
+        try {
+            const response = await fetch(`/notifications/${notificationId}/read/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                // Remove unread styling
+                element.classList.remove('unread');
+                
+                // Update the unread count in the header
+                const badge = document.querySelector('.notifications-header .badge');
+                if (badge) {
+                    const currentCount = parseInt(badge.textContent);
+                    if (currentCount > 1) {
+                        badge.textContent = `${currentCount - 1} unread`;
+                    } else {
+                        badge.remove();
+                    }
+                }
+
+                // Update the notification count in the navbar
+                const navBadge = document.querySelector('.nav-item .notification-badge');
+                if (navBadge) {
+                    const currentNavCount = parseInt(navBadge.textContent);
+                    if (currentNavCount > 1) {
+                        navBadge.textContent = currentNavCount - 1;
+                    } else {
+                        navBadge.remove();
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    }
+}
+</script>
+{% endblock %} 

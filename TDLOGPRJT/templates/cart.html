@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="cart">
+    <h2>Shopping Cart</h2>
+    {% if cart_items %}
+        {% for item in cart_items %}
+        <div class="cart-item">
+            <h3>{{ item.product.name }}</h3>
+            <p>${{ item.product.price|floatformat:2 }}</p>
+            <form action="{% url 'update_cart' item.product.id %}" method="POST">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="0">
+                <button type="submit">Update</button>
+            </form>
+            <p>Subtotal: ${{ item.product.price|multiply:item.quantity|floatformat:2 }}</p>
+        </div>
+        {% endfor %}
+        <div class="cart-total">
+            <h3>Total: ${{ total|floatformat:2 }}</h3>
+        </div>
+    {% else %}
+        <p>Your cart is empty</p>
+    {% endif %}
+</div>
+{% endblock %} 

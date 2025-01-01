@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Buy and Sell Cars Easily, Anytime, Anywhere</h1>
+        <p class="hero-subtitle">Find your dream car or sell your vehicle in just a few clicks.</p>
+        <div class="hero-buttons">
+            <a href="{% url 'cars' %}" class="button primary">Start Buying</a>
+            <a href="{% url 'list_car' %}" class="button secondary">Sell Your Car</a>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps-container">
+        <div class="step">
+            <i class="fas fa-search"></i>
+            <h3>Find Cars</h3>
+            <p>Browse thousands of listings to find the perfect car for you.</p>
+        </div>
+        <div class="step">
+            <i class="fas fa-car"></i>
+            <h3>List Your Car</h3>
+            <p>Easily list your car for sale in minutes.</p>
+        </div>
+        <div class="step">
+            <i class="fas fa-handshake"></i>
+            <h3>Get Great Deals</h3>
+            <p>Buy and sell with confidence, thanks to secure transactions.</p>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Benefits Section -->
+<section class="benefits">
+    <h2>Why Choose Us</h2>
+    <div class="benefits-grid">
+        <div class="benefit">
+            <i class="fas fa-star"></i>
+            <h3>Personalized Recommendations</h3>
+            <p>Get car suggestions based on your preferences.</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Secure Transactions</h3>
+            <p>Enjoy peace of mind with verified listings.</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-bell"></i>
+            <h3>Saved Searches & Alerts</h3>
+            <p>Get notified when your dream car is listed.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <h2>Ready to Get Started?</h2>
+    <p>Join thousands of satisfied buyers and sellers today.</p>
+    <div class="cta-buttons">
+        <a href="{% url 'register' %}" class="button primary">Sign Up Now</a>
+        <a href="{% url 'login' %}" class="button secondary">Log In</a>
+    </div>
+</section>
+{% endblock %} 

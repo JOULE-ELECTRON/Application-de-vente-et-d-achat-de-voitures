@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="history-container">
+    <div class="history-header">
+        <h1>Recently Viewed Cars</h1>
+    </div>
+    
+    <div class="history-timeline">
+        {% if viewed_cars %}
+            {% for view in viewed_cars %}
+            <div class="history-item">
+                <div class="history-date">
+                    {{ view.viewed_at|date:"F j, Y" }}
+                </div>
+                <div class="car-card">
+                    <div class="car-image">
+                        {% if view.car.image_url %}
+                        <img src="{% static 'images/'|add:view.car.image_url %}" alt="{{ view.car.make }} {{ view.car.model }}">
+                        {% endif %}
+                    </div>
+                    <div class="car-info">
+                        <h2>{{ view.car.year }} {{ view.car.make }} {{ view.car.model }}</h2>
+                        <p class="price">${{ view.car.price|floatformat:2|intcomma }}</p>
+                        <a href="{% url 'car_detail' view.car.id %}" class="button primary">View Again</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-history">
+                <i class="fas fa-history"></i>
+                <h2>No Viewing History</h2>
+                <p>Cars you view will appear here</p>
+                <a href="{% url 'cars' %}" class="button primary">Start Browsing</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 
