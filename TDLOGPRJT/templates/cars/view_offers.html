@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="offers-container">
+    <div class="offers-header">
+        <div class="header-content">
+            <h1>Offers Received</h1>
+            <p>Manage offers for your listed cars</p>
+        </div>
+    </div>
+
+    <div class="offers-list">
+        {% for offer in offers %}
+        <div id="offer-{{ offer.id }}" class="offer-card {% if not offer.is_read %}unread{% endif %}">
+            <div class="offer-header">
+                <div class="car-info">
+                    <h3>{{ offer.car.year }} {{ offer.car.make }} {{ offer.car.model }}</h3>
+                    <p class="listing-price">Your listing price: ${{ offer.car.price|floatformat:2|intcomma }}</p>
+                </div>
+                <div class="offer-status {{ offer.status }}">
+                    <span>{{ offer.status|title }}</span>
+                </div>
+            </div>
+
+            <div class="offer-details">
+                <div class="buyer-info">
+                    <i class="fas fa-user"></i>
+                    <span>Offer from {{ offer.buyer.username }}</span>
+                </div>
+                <div class="offer-amount">
+                    <i class="fas fa-tag"></i>
+                    <span>Offered amount: ${{ offer.amount|floatformat:2|intcomma }}</span>
+                </div>
+                {% if offer.message %}
+                <div class="offer-message">
+                    <i class="fas fa-comment"></i>
+                    <p>"{{ offer.message }}"</p>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if offer.status == 'pending' %}
+            <div class="offer-actions">
+                <button class="button primary" onclick="handleOffer({{ offer.id }}, 'accept')">
+                    <i class="fas fa-check"></i>
+                    Accept Offer
+                </button>
+                <button class="button secondary" onclick="handleOffer({{ offer.id }}, 'reject')">
+                    <i class="fas fa-times"></i>
+                    Reject Offer
+                </button>
+                <button class="button secondary" onclick="showCounterOfferForm({{ offer.id }})">
+                    <i class="fas fa-exchange-alt"></i>
+                    Counter Offer
+                </button>
+            </div>
+
+            <div id="counter-offer-form-{{ offer.id }}" class="counter-offer-form" style="display: none;">
+                <form onsubmit="submitCounterOffer(event, {{ offer.id }})">
+                    <div class="form-group">
+                        <label>Counter Offer Amount</label>
+                        <div class="amount-input">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" name="amount" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Message (Optional)</label>
+                        <textarea name="message" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="button primary">Send Counter Offer</button>
+                        <button type="button" class="button secondary" onclick="hideCounterOfferForm({{ offer.id }})">Cancel</button>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="no-offers">
+            <i class="fas fa-inbox"></i>
+            <p>No offers received yet</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+async function handleOffer(offerId, action) {
+    try {
+        const response = await fetch(`/offers/${offerId}/${action}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            location.reload();
+        }
+    } catch (error) {
+        console.error('Error handling offer:', error);
+    }
+}
+
+function showCounterOfferForm(offerId) {
+    document.getElementById(`counter-offer-form-${offerId}`).style.display = 'block';
+}
+
+function hideCounterOfferForm(offerId) {
+    document.getElementById(`counter-offer-form-${offerId}`).style.display = 'none';
+}
+
+async function submitCounterOffer(event, offerId) {
+    event.preventDefault();
+    const form = event.target;
+    const amount = form.amount.value;
+    const message = form.message.value;
+
+    try {
+        const response = await fetch(`/offers/${offerId}/counter/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ amount, message })
+        });
+
+        if (response.ok) {
+            location.reload();
+        }
+    } catch (error) {
+        console.error('Error submitting counter offer:', error);
+    }
+}
+
+// Scroll to specific offer if hash exists
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.hash) {
+        const element = document.querySelector(window.location.hash);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+            element.classList.add('highlight');
+        }
+    }
+});
+</script>
+
+<style>
+.offers-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.offers-header {
+    margin-bottom: 2rem;
+}
+
+.offer-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--card-shadow);
+}
+
+.offer-card.unread {
+    border-left: 4px solid var(--primary-color);
+}
+
+.offer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.offer-status {
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.offer-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.offer-status.accepted {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.offer-status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.offer-details {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.offer-message {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-style: italic;
+}
+
+.offer-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.counter-offer-form {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.amount-input {
+    position: relative;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.amount-input input {
+    width: 100%;
+    padding: 0.75rem;
+    padding-left: 2rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .offer-actions {
+        flex-direction: column;
+    }
+    
+    .offer-actions button {
+        width: 100%;
+    }
+}
+
+/* Add highlight animation */
+@keyframes highlight {
+    0% { background-color: var(--primary-color); }
+    100% { background-color: white; }
+}
+
+.offer-card.highlight {
+    animation: highlight 2s;
+}
+</style>
+{% endblock %}
