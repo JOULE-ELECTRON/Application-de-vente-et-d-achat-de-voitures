@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="car-detail">
+    <div class="car-image">
+        {% if car.image_url %}
+        <img src="{% static 'images/'|add:car.image_url %}" alt="{{ car.make }} {{ car.model }}">
+        {% endif %}
+    </div>
+    <div class="car-info">
+        <h1>{{ car.year }} {{ car.make }} {{ car.model }}</h1>
+        <p class="price">${{ car.price|floatformat:2|intcomma }}</p>
+        <div class="car-details">
+            <div class="detail-item">
+                <span class="label">Mileage:</span>
+                <span class="value">{{ car.mileage|intcomma }} miles</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Transmission:</span>
+                <span class="value">{{ car.transmission }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Fuel Type:</span>
+                <span class="value">{{ car.fuel_type }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Condition:</span>
+                <span class="value">{{ car.condition }}</span>
+            </div>
+        </div>
+        
+        {% if user.is_authenticated %}
+        <div class="car-actions">
+            <a href="{% url 'make_offer' car.id %}" class="button primary">
+                <i class="fas fa-hand-holding-usd"></i>
+                Make Offer
+            </a>
+            <button class="button secondary favorite-btn" data-car-id="{{ car.id }}" 
+                    onclick="toggleFavorite(this, {{ car.id }})">
+                <i class="{% if car in favorite_cars %}fas{% else %}far{% endif %} fa-heart"></i>
+                <span>{% if car in favorite_cars %}Remove from{% else %}Add to{% endif %} Favorites</span>
+            </button>
+            <a href="{% url 'make_trade_offer' car.id %}" class="button secondary">
+                <i class="fas fa-exchange-alt"></i>
+                Propose Trade
+            </a>
+        </div>
+        {% else %}
+        <div class="car-actions">
+            <a href="{% url 'login' %}" class="button primary">Sign In to Contact Seller</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+async function toggleFavorite(button, carId) {
+    const isCurrentlyFavorite = button.querySelector('i').classList.contains('fas');
+    const url = isCurrentlyFavorite 
+        ? `/favorites/remove/${carId}/` 
+        : `/favorites/add/${carId}/`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const icon = button.querySelector('i');
+            const text = button.querySelector('span');
+            
+            if (isCurrentlyFavorite) {
+                icon.classList.replace('fas', 'far');
+                text.textContent = 'Add to Favorites';
+            } else {
+                icon.classList.replace('far', 'fas');
+                text.textContent = 'Remove from Favorites';
+            }
+        }
+    } catch (error) {
+        console.error('Error toggling favorite:', error);
+    }
+}
+</script>
+{% endblock %} 

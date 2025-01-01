@@ -1,0 +1,451 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Cars</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-wrapper">
+            <div class="brand">
+                <a href="{% url 'index' %}" class="brand-link">
+                    <i class="fas fa-car-side"></i>
+                    <span>Luxury Cars</span>
+                </a>
+            </div>
+
+            <div class="nav-links">
+                <a href="{% url 'index' %}" class="nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{% url 'cars' %}" class="nav-item {% if request.resolver_match.url_name == 'cars' %}active{% endif %}">
+                    <i class="fas fa-car"></i>
+                    <span>Browse Cars</span>
+                </a>
+                <a href="{% url 'list_car' %}" class="nav-item">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Sell Car</span>
+                </a>
+            </div>
+
+            {% if user.is_authenticated %}
+            <div class="user-menu">
+                <a href="{% url 'notifications' %}" class="nav-item notification-btn">
+                    <i class="fas fa-bell"></i>
+                    {% if unread_notifications_count %}
+                    <span class="notification-badge pulse">{{ unread_notifications_count }}</span>
+                    {% endif %}
+                </a>
+
+                <div class="dropdown">
+                    <button class="dropdown-trigger">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                            <span>{{ user.username }}</span>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-header">
+                            <span class="user-email">{{ user.email }}</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="{% url 'profile' %}" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            Profile
+                        </a>
+                        <a href="{% url 'my_offers' %}" class="dropdown-item">
+                            <i class="fas fa-paper-plane"></i>
+                            My Offers
+                        </a>
+                        <a href="{% url 'favorites' %}" class="dropdown-item">
+                            <i class="fas fa-heart"></i>
+                            Favorites
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <form method="post" action="{% url 'logout' %}" class="logout-form">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="auth-buttons">
+                <a href="{% url 'login' %}" class="button outline">Sign In</a>
+                <a href="{% url 'register' %}" class="button primary">Register</a>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash {% if message.tags %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{% static 'js/auth.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/nav.js' %}"></script>
+    <style>
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #ffffff;
+            padding: 30px;
+            width: 450px;
+            border-radius: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-wrapper {
+            position: relative;
+            min-height: calc(100vh - 64px);
+        }
+
+        ::placeholder {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .form button {
+            align-self: flex-end;
+        }
+
+        .flex-column > label {
+            color: #151717;
+            font-weight: 600;
+        }
+
+        .inputForm {
+            border: 1.5px solid #ecedec;
+            border-radius: 10px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            transition: 0.2s ease-in-out;
+        }
+
+        .input {
+            margin-left: 10px;
+            border-radius: 10px;
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .input:focus {
+            outline: none;
+        }
+
+        .inputForm:focus-within {
+            border: 1.5px solid #2d79f3;
+        }
+
+        .flex-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .flex-row > div > label {
+            font-size: 14px;
+            color: black;
+            font-weight: 400;
+        }
+
+        .span {
+            font-size: 14px;
+            margin-left: 5px;
+            color: #2d79f3;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .button-submit {
+            margin: 20px 0 10px 0;
+            background-color: #151717;
+            border: none;
+            color: white;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 10px;
+            height: 50px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .p {
+            text-align: center;
+            color: black;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .btn {
+            margin-top: 10px;
+            width: 100%;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 500;
+            gap: 10px;
+            border: 1px solid #ededef;
+            background-color: white;
+            cursor: pointer;
+            transition: 0.2s ease-in-out;
+        }
+
+        .btn:hover {
+            border: 1px solid #2d79f3;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-wrapper {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .brand-link:hover {
+            color: var(--primary-dark);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary-color);
+            background: #f8fafc;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .notification-btn {
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            min-width: 1.5rem;
+            text-align: center;
+        }
+
+        .notification-badge.pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-trigger {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .user-avatar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.2s;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .user-email {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.text-danger {
+            color: var(--danger-color);
+        }
+
+        .dropdown-item.text-danger:hover {
+            background: #fee2e2;
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .button.outline {
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .button.outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .button.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .button.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-wrapper {
+                padding: 0.75rem 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .user-menu {
+                gap: 0.5rem;
+            }
+
+            .user-avatar span {
+                display: none;
+            }
+        }
+    </style>
+</body>
+</html> 
