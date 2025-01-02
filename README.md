@@ -1,7 +1,9 @@
 TDLOGPRJT: Vente et Achat de Voitures
 
+# Version de python requise
+python 3.11
 
-#Description
+# Description
 Ce projet est une application web développée avec Django, permettant aux utilisateurs de consulter, filtrer et interagir avec des annonces de voitures 
 et aussi de vendre des voitures pour des prestataires. Elle offre des fonctionnalités comme :
 
@@ -11,7 +13,7 @@ et aussi de vendre des voitures pour des prestataires. Elle offre des fonctionna
 *Notifications pour les interactions liées aux annonces.
 *Authentification et gestion des profils utilisateurs.
 
-#Structure du Projet
+# Structure du Projet
 *Backend :
 Framework : Django
 Base de données : SQLite
@@ -25,34 +27,36 @@ Django : 4.x
 SQLite (installé par défaut avec Python)
 
 
-#Installation
+# Installation #
 
-#Clonez le dépôt :
+# Clonez le dépôt :
 
 
 git clone <repository-url>
 cd TDLOGPRJT
-#Installez les dépendances :
+# Installez les dépendances :
 
 
 pip install -r requirements.txt
-#Appliquez les migrations :
+# Appliquez les migrations :
 
 python manage.py migrate
 
-#Lancez le serveur local :
+# Lancez le serveur local :
 
 python manage.py runserver
 
+# Accédez à l'application :
+Ouvrez http://127.0.0.1:8000 dans votre navigateur(Celui qui s'affichera .
 
-#Fonctionnalités Principales
+# Fonctionnalités Principales
 Filtrage et tri :
 Les utilisateurs peuvent rechercher des voitures par marque ou trier les résultats par prix ou année et il en est de même pour le vendeur.
 
-#Gestion des offres :
+# Gestion des offres :
 Les utilisateurs connectés peuvent soumettre, consulter ou accepter des offres pour les voitures listées.
 
-#Notifications :
+# Notifications :
 Les vendeurs reçoivent des notifications pour toutes les nouvelles interactions liées à leurs annonces.
 
 
